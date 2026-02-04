@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Lounge | LuxeStays Gaming</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="js/auth.js"></script>
+    <style>
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: var(--neon-border);
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 30px rgba(102, 252, 241, 0.2);
+            border-color: var(--primary-hover);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">LuxeGAME</a>
+            <ul class="nav-links">
+                <!-- Injected by Auth.js -->
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero"
+        style="height: 400px; background-image: linear-gradient(rgba(11, 12, 16, 0.8), rgba(11, 12, 16, 0.8)), url('https://images.unsplash.com/photo-1552820728-8b83bb6b773f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+        <div class="hero-content">
+            <h1>The Lounge</h1>
+            <p>24/7 Access to Top-Tier Equipment</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div style="text-align:center; max-width:800px; margin:0 auto;">
+            <h2>Level Up Your Experience</h2>
+            <p>All guests enjoy complimentary access to our state-of-the-art gaming zones. Whether you're a casual
+                player or a competitive pro, we have the gear you need.</p>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <i class="fas fa-desktop feature-icon"></i>
+                <h3>Pro PC Stations</h3>
+                <p>RTX 4090s, i9 Processors, and 360Hz Monitors pre-loaded with all major titles.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-gamepad feature-icon"></i>
+                <h3>Console Havens</h3>
+                <p>PS5, Xbox Series X, and Switch OLEDs on 85" 4K OLED displays.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-vr-cardboard feature-icon"></i>
+                <h3>VR Immersion</h3>
+                <p>Dedicated room-scale VR zones featuring the latest headsets and omni-treadmills.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-wifi feature-icon"></i>
+                <h3>Gigabit Fiber</h3>
+                <p>Direct fiber lines ensuring <5ms ping to all major game servers.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-couch feature-icon"></i>
+                <h3>Chill Zones</h3>
+                <p>Ergonomic Herman Miller chairs and bean bags for post-match recovery.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-cocktail feature-icon"></i>
+                <h3>Potion Bar</h3>
+                <p>Themed energy drinks and snacks available 24/7 to keep you fueled.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth.js moved to head -->
+</body>
+
+</html>

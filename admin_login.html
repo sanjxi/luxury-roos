@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Portal | LuxeStays</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/auth.js"></script>
+    <style>
+        body {
+            background-color: #1a2b49;
+            /* Navy background for admin */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .admin-login-card {
+            background: #fff;
+            padding: 3rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-top: 5px solid #c5a47e;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .admin-header h2 {
+            color: #1a2b49;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-header p {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #c5a47e;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="admin-login-card">
+        <div class="admin-header">
+            <h2>Staff Portal</h2>
+            <p>Please enter your credentials</p>
+        </div>
+
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label class="form-label">Employee Email</label>
+                <input type="email" id="adminEmail" class="form-control" required placeholder="admin@luxestays.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="adminPassword" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" style="background-color: #1a2b49;">Secure
+                Login</button>
+        </form>
+
+        <a href="entry.html" class="back-link">Back to Entrance</a>
+    </div>
+
+    <script>
+        document.getElementById('adminLoginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+
+            const result = Auth.loginAdmin(email, password);
+            if (result.success) {
+                window.location.href = 'admin_dashboard.html';
+            } else {
+                alert(result.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

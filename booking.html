@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Booking | LuxeStays</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="js/auth.js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">LuxeStays</a>
+            <ul class="nav-links">
+                <!-- Injected by Auth.js -->
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top:2rem;">
+        <h1 style="margin-bottom:2rem;">Secure Your Stay</h1>
+
+        <div style="display:grid; grid-template-columns: 2fr 1fr; gap:3rem;">
+            <div id="booking-form-container">
+                <div class="card" style="padding:2rem; margin-bottom:2rem;">
+                    <h3 style="margin-bottom:1.5rem;">Guest Information</h3>
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="guestName" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="guestEmail" class="form-control" readonly>
+                    </div>
+                </div>
+
+                <div class="card" style="padding:2rem;">
+                    <h3 style="margin-bottom:1.5rem;">Payment Method</h3>
+
+                    <div style="display:flex; gap:1rem; margin-bottom:1.5rem;">
+                        <label class="card"
+                            style="flex:1; padding:1.5rem; cursor:pointer; text-align:center; border:2px solid transparent; transition:all 0.3s ease;">
+                            <input type="radio" name="paymentMethod" value="card" checked
+                                onchange="togglePayment('card')" style="margin-bottom:0.5rem;">
+                            <div style="font-weight:600; margin-bottom:0.5rem;">Credit/Debit Card</div>
+                            <div style="color:var(--primary); font-size:1.5rem;">
+                                <i class="fab fa-cc-visa"></i> <i class="fab fa-cc-mastercard"></i>
+                            </div>
+                        </label>
+                        <label class="card"
+                            style="flex:1; padding:1.5rem; cursor:pointer; text-align:center; border:2px solid transparent; transition:all 0.3s ease;">
+                            <input type="radio" name="paymentMethod" value="hotel" onchange="togglePayment('hotel')"
+                                style="margin-bottom:0.5rem;">
+                            <div style="font-weight:600; margin-bottom:0.5rem;">Pay at Hotel</div>
+                            <div style="color:var(--success); font-size:1.5rem;">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                        </label>
+                    </div>
+
+                    <form id="payment-form">
+                        <div id="card-details">
+                            <div class="form-group">
+                                <label class="form-label">Card Number</label>
+                                <input type="text" id="card-num" class="form-control" placeholder="0000 0000 0000 0000"
+                                    maxlength="19">
+                            </div>
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Expiry Date</label>
+                                    <input type="text" id="card-exp" class="form-control" placeholder="MM/YY"
+                                        maxlength="5">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">CVV</label>
+                                    <input type="password" id="card-cvv" class="form-control" placeholder="123"
+                                        maxlength="3">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="pay-hotel-msg"
+                            style="display:none; text-align:center; padding:1rem; color:var(--text-muted); background:#f8f9fa; border-radius:4px; margin-bottom:1rem;">
+                            <i class="fas fa-hotel fa-2x" style="margin-bottom:0.5rem; display:block;"></i>
+                            You will pay the full amount upon arrival at the hotel. No card required now.
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block" style="margin-top:1rem;">Confirm
+                            Booking</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="booking-summary">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="modal-overlay" style="display:none;">
+        <div class="modal" style="text-align:center;">
+            <div class="spinner"></div>
+            <h3>Processing Payment...</h3>
+            <p>Please do not close this window.</p>
+        </div>
+    </div>
+
+    <!-- Auth.js moved to head -->
+    <script src="js/hotels.js"></script>
+    <script src="js/booking.js"></script>
+    <script src="js/payment.js"></script>
+    <script>
+        // Global state for recalculation
+        let state = {
+            hotel: null,
+            room: null,
+            roomIndex: 0,
+            checkIn: '',
+            checkOut: '',
+            nights: 0,
+            price: 0
+        };
+
+        function togglePayment(method) {
+            const cardDetails = document.getElementById('card-details');
+            const hotelMsg = document.getElementById('pay-hotel-msg');
+
+            if (method === 'card') {
+                cardDetails.style.display = 'block';
+                hotelMsg.style.display = 'none';
+                document.getElementById('card-num').setAttribute('required', 'true');
+            } else {
+                cardDetails.style.display = 'none';
+                hotelMsg.style.display = 'block';
+                document.getElementById('card-num').removeAttribute('required');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Require login
+            Auth.requireAuth();
+            const user = Auth.getCurrentUser();
+
+            document.getElementById('guestName').value = user.name;
+            document.getElementById('guestEmail').value = user.email;
+            if (user.phone) {
+                // Pre-fill phone if available (would need input field)
+            }
+
+            // Parse params
+            const params = new URLSearchParams(window.location.search);
+            state.hotelId = params.get('hotelId');
+            state.roomIndex = parseInt(params.get('roomIndex'));
+            state.checkIn = params.get('checkIn');
+            state.checkOut = params.get('checkOut');
+
+            state.hotel = Hotels.getById(state.hotelId);
+            if (!state.hotel) {
+                alert('Invalid booking details');
+                window.location.href = 'index.html';
+                return;
+            }
+
+            state.room = state.hotel.rooms[state.roomIndex];
+
+            // Initial Render
+            updateSummary();
+
+            // Handle Payment
+            document.getElementById('payment-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // Recalculate to be safe
+                const nights = Booking.calculateNights(state.checkIn, state.checkOut);
+                const totalPrice = nights * state.room.price;
+
+                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+                document.getElementById('loading-modal').style.display = 'flex';
+
+                try {
+                    if (paymentMethod === 'card') {
+                        const cardNum = document.getElementById('card-num').value;
+                        const cardCvv = document.getElementById('card-cvv').value;
+                        await Payment.process({ number: cardNum, cvv: cardCvv });
+                    } else {
+                        // Pay at Hotel simulation
+                        await new Promise(r => setTimeout(r, 1500));
+                    }
+
+                    const bookingData = {
+                        userId: user.id,
+                        hotelId: state.hotel.id,
+                        roomType: state.room.type,
+                        checkIn: state.checkIn,
+                        checkOut: state.checkOut,
+                        nights: nights,
+                        totalPrice: totalPrice,
+                        paymentMethod: paymentMethod, // Store method
+                        status: 'confirmed'
+                    };
+
+                    Booking.create(bookingData);
+
+                    // Success redirect
+                    window.location.href = 'dashboard.html';
+
+                } catch (error) {
+                    alert(error.message);
+                    document.getElementById('loading-modal').style.display = 'none';
+                }
+            });
+        });
+
+        function updateSummary() {
+            const { hotel, room, checkIn, checkOut } = state;
+            const nights = Booking.calculateNights(checkIn, checkOut);
+            const totalPrice = nights * room.price;
+
+            const summaryContainer = document.getElementById('booking-summary');
+            summaryContainer.innerHTML = `
+        <div class="card" style="padding:1.5rem; position:sticky; top:100px;">
+            <h3 style="margin-bottom:1rem;">Your Booking</h3>
+            <img src="${hotel.image}" alt="${hotel.name}" style="border-radius:4px; margin-bottom:1rem; width:100%; height:150px; object-fit:cover;">
+                <div style="margin-bottom:1rem;">
+                    <h4>${hotel.name}</h4>
+                    <p style="color:var(--grey); font-size:0.9rem;">${hotel.city}</p>
+                </div>
+                <div style="border-top:1px solid #eee; border-bottom:1px solid #eee; padding:1rem 0; margin-bottom:1rem;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                        <span>Check-In</span>
+                        <input type="date" value="${checkIn}" onchange="updateDates('in', this.value)" style="border:1px solid #ccc; border-radius:4px; padding:2px;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between;">
+                        <span>Check-Out</span>
+                        <input type="date" value="${checkOut}" onchange="updateDates('out', this.value)" style="border:1px solid #ccc; border-radius:4px; padding:2px;">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-top:0.5rem; color:var(--grey); font-size:0.9rem;">
+                        <span>${nights} Nights</span>
+                    </div>
+                </div>
+                <div style="margin-bottom:1rem;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                        <span>${room.type}</span>
+                        <span>$${room.price} x ${nights}</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                        <span>Service Fee</span>
+                        <span>$0.00</span>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.2rem; border-top:1px solid #eee; padding-top:1rem;">
+                    <span>Total (USD)</span>
+                    <span>$${totalPrice}</span>
+                </div>
+        </div>
+            `;
+        }
+
+        function updateDates(type, value) {
+            if (type === 'in') state.checkIn = value;
+            if (type === 'out') state.checkOut = value;
+
+            // Validate
+            const inDate = new Date(state.checkIn);
+            const outDate = new Date(state.checkOut);
+
+            if (outDate <= inDate) {
+                alert('Check-out must be after Check-in');
+                // Reset to valid (plus 1 day or original)
+                // For now, just re-render to revert visual change if invalid, but ideally we adjust the other date
+                return;
+            }
+            updateSummary();
+        }
+    </script>
+</body>
+
+</html>

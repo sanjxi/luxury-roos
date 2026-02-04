@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | LuxeStays</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">LuxeStays</a>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="card auth-card">
+            <h2 style="text-align:center;">Create Account</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" required minlength="6">
+                </div>
+
+                <div id="error-msg" style="color:var(--danger); margin-bottom:1rem; display:none;"></div>
+
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+            <p style="text-align:center; margin-top:1rem;">
+                Already have an account? <a href="login.html" style="color:var(--accent); font-weight:600;">Login</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const result = Auth.register(name, email, password);
+
+            if (result.success) {
+                window.location.href = 'index.html';
+            } else {
+                const msg = document.getElementById('error-msg');
+                msg.textContent = result.message;
+                msg.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

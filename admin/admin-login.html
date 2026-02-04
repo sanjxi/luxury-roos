@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal | LuxeStays</title>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Admin Styles -->
+    <link rel="stylesheet" href="css/admin-style.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <!-- Warning Banner -->
+        <div class="warning-banner">
+            <i class="fas fa-shield-alt"></i>
+            <span>Authorized Administrators Only</span>
+        </div>
+
+        <div class="login-card">
+            <div class="brand-header">
+                <h1>LuxeStays</h1>
+                <p>Management Portal</p>
+            </div>
+
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label class="form-label">Admin Email</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" class="form-input" placeholder="admin@luxestays.com" required
+                            autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" class="form-input" placeholder="••••••••" required
+                            onpaste="return false;">
+                        <i class="fas fa-eye toggle-password" id="togglePass"></i>
+                    </div>
+                </div>
+
+                <div id="error-message" class="error-msg"></div>
+
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <span>Secure Login</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+        </div>
+        <p style="text-align: center; color: #555; font-size: 0.8rem; margin-top: 1rem;">
+            &copy; 2026 LuxeStays Hotel Group. System Secure.
+        </p>
+    </div>
+
+    <!-- Logic -->
+    <script src="js/admin-auth.js"></script>
+    <script>
+        // Check if already logged in
+        const session = JSON.parse(localStorage.getItem('admin_session'));
+        if (session && session.logged_in) {
+            window.location.href = 'admin-dashboard.html';
+        }
+
+        // Toggle Password Visibility
+        const toggleBtn = document.getElementById('togglePass');
+        const passInput = document.getElementById('password');
+
+        toggleBtn.addEventListener('click', () => {
+            const type = passInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passInput.setAttribute('type', type);
+            toggleBtn.classList.toggle('fa-eye');
+            toggleBtn.classList.toggle('fa-eye-slash');
+        });
+
+        // Handle Login
+        document.getElementById('admin-login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('error-message');
+
+            // Reset Error
+            errorDiv.classList.remove('visible');
+            errorDiv.textContent = '';
+
+            // Loading Animation
+            btn.classList.add('loading');
+            btn.disabled = true;
+
+            // Simulate Network Delay (Innovative feel)
+            setTimeout(() => {
+                const result = AdminAuth.login(email, password);
+
+                if (result.success) {
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
+                    errorDiv.textContent = result.message;
+                    errorDiv.classList.add('visible');
+
+                    if (result.locked) {
+                        document.getElementById('email').disabled = true;
+                        document.getElementById('password').disabled = true;
+                    }
+                }
+            }, 800);
+        });
+
+        // Initial Lockout Check
+        const initCheck = AdminAuth.init();
+        if (initCheck.locked) {
+            const errorDiv = document.getElementById('error-message');
+            document.getElementById('email').disabled = true;
+            document.getElementById('password').disabled = true;
+            document.getElementById('loginBtn').disabled = true;
+            errorDiv.textContent = `Account locked. Wait ${Math.ceil(initCheck.remaining / 1000)}s.`;
+            errorDiv.classList.add('visible');
+        }
+    </script>
+</body>
+
+</html>

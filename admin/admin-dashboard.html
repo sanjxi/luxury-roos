@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | LuxeStays Admin</title>
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Admin Styles -->
+    <link rel="stylesheet" href="css/admin-style.css">
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <div class="brand-header" style="margin-bottom:0; text-align:left;">
+                <h1 style="font-size:1.5rem; margin:0;">LuxeStays <span class="admin-badge">ADMIN</span></h1>
+            </div>
+            <div style="display:flex; align-items:center; gap:1rem;">
+                <span style="color:var(--text-muted); font-size:0.9rem;">
+                    <i class="fas fa-user-circle"></i> <span id="admin-email-display">Loading...</span>
+                </span>
+                <button id="logout-btn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </nav>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <p class="stat-title">Total Bookings</p>
+                <div class="stat-value">1,248</div>
+                <div style="color:var(--success); font-size:0.8rem; margin-top:5px;">
+                    <i class="fas fa-arrow-up"></i> 12% vs last month
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <p class="stat-title">Revenue (YTD)</p>
+                <div class="stat-value">$482k</div>
+                <div style="color:var(--success); font-size:0.8rem; margin-top:5px;">
+                    <i class="fas fa-arrow-up"></i> 8% vs last month
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <p class="stat-title">Occupancy</p>
+                <div class="stat-value">84%</div>
+                <div style="color:var(--danger); font-size:0.8rem; margin-top:5px;">
+                    <i class="fas fa-arrow-down"></i> 2% vs last month
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <p class="stat-title">Active Guests</p>
+                <div class="stat-value">342</div>
+                <div style="color:var(--text-muted); font-size:0.8rem; margin-top:5px;">
+                    Currently checked in
+                </div>
+            </div>
+        </div>
+
+        <!-- Placeholder for more content -->
+        <div
+            style="margin-top: 3rem; text-align:center; padding: 4rem; border: 1px dashed var(--border); border-radius: 8px; color: var(--text-muted);">
+            <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+            <p>Advanced Analytics Module Loading...</p>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/admin-auth.js"></script>
+    <script src="js/admin-dashboard.js"></script>
+</body>
+
+</html>

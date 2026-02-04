@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuxeStays | Find Your Perfect Getaway</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="js/auth.js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">LuxeStays</a>
+            <ul class="nav-links">
+                <!-- Injected by Auth.js -->
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Experience Luxury</h1>
+            <p>Discover the world's most incredible hotels</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-container">
+            <form id="search-form" class="search-form">
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Destination</label>
+                    <input type="text" id="destination" class="form-control" placeholder="Where do you want to go?">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Check In</label>
+                    <input type="date" id="checkIn" class="form-control">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Check Out</label>
+                    <input type="date" id="checkOut" class="form-control">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Guests</label>
+                    <select id="guests" class="form-control">
+                        <option value="1">1 Guest</option>
+                        <option value="2" selected>2 Guests</option>
+                        <option value="3">3 Guests</option>
+                        <option value="4">4+ Guests</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Search Hotels</button>
+            </form>
+        </div>
+
+        <h2 style="margin-bottom:2rem; margin-top:4rem;">Featured Stays</h2>
+
+        <div class="filters-container">
+            <span>Filter by: </span>
+            <select id="sort-price" class="form-control" style="width:auto;">
+                <option value="">Price</option>
+                <option value="asc">Low to High</option>
+                <option value="desc">High to Low</option>
+            </select>
+        </div>
+
+        <div id="hotels-grid" class="hotel-grid">
+            <!-- Loading or Hotels inserted here -->
+        </div>
+    </div>
+
+    <!-- Auth.js moved to head -->
+    <script src="js/hotels.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial Load
+            Hotels.renderHotels(Hotels.getAll(), 'hotels-grid');
+
+            // Search Handler
+            document.getElementById('search-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const city = document.getElementById('destination').value;
+                const guests = document.getElementById('guests').value;
+
+                // Store search dates for later use in booking
+                const checkIn = document.getElementById('checkIn').value;
+                const checkOut = document.getElementById('checkOut').value;
+
+                if (checkIn && checkOut) {
+                    localStorage.setItem('hotelApp_searchParams', JSON.stringify({ checkIn, checkOut, guests }));
+                }
+
+                const results = Hotels.search({ city, guests });
+                Hotels.renderHotels(results, 'hotels-grid');
+            });
+
+            // Sort Handler
+            document.getElementById('sort-price').addEventListener('change', (e) => {
+                const sort = e.target.value;
+                let current = Array.from(document.querySelectorAll('.card')).map(card => {
+                    // This is a naive sort based on DOM, better to re-query data
+                    // Re-fetching data for simplicity
+                    return Hotels.getAll(); // Simplified reset
+                })[0];
+
+                // For a proper sort, we should track current filtered state.
+                // Re-running search with current inputs:
+                const city = document.getElementById('destination').value;
+                const guests = document.getElementById('guests').value;
+                let results = Hotels.search({ city, guests });
+
+                if (sort === 'asc') {
+                    results.sort((a, b) => a.price - b.price);
+                } else if (sort === 'desc') {
+                    results.sort((a, b) => b.price - a.price);
+                }
+
+                Hotels.renderHotels(results, 'hotels-grid');
+            });
+        });
+    </script>
+</body>
+
+</html>

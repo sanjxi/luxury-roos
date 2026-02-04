@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Details | LuxeStays</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap"
+        res="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="js/auth.js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">LuxeStays</a>
+            <ul class="nav-links">
+                <!-- Injected by Auth.js -->
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top:2rem;">
+        <div id="hotel-content">
+            <!-- Injected via JS -->
+        </div>
+    </div>
+
+    <!-- Auth.js moved to head -->
+    <script src="js/hotels.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const hotelId = params.get('id');
+            const hotel = Hotels.getById(hotelId);
+
+            if (!hotel) {
+                document.getElementById('hotel-content').innerHTML = '<h2>Hotel not found</h2><a href="index.html" class="btn btn-primary">Back to Home</a>';
+                return;
+            }
+
+            document.title = `${hotel.name} | LuxeStays`;
+
+            const container = document.getElementById('hotel-content');
+            container.innerHTML = `
+                <div class="hotel-detail-header">
+                    <h1 style="font-size:3rem; margin-bottom:0.5rem;">${hotel.name}</h1>
+                    <div style="display:flex; gap:1rem; align-items:center; color:var(--grey);">
+                        <span><i class="fas fa-map-marker-alt"></i> ${hotel.city}</span>
+                        <span>${'★'.repeat(hotel.rating)}${'☆'.repeat(5 - hotel.rating)}</span>
+                    </div>
+                </div>
+
+                <div class="gallery-grid">
+                    <img src="${hotel.image}" class="gallery-main" alt="${hotel.name}">
+                    <div class="gallery-side">
+                        <img src="${hotel.rooms[0] ? hotel.rooms[0].image : hotel.image}" alt="Room view">
+                        <img src="${hotel.rooms[1] ? hotel.rooms[1].image : hotel.image}" alt="Detail view">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 2fr 1fr; gap:3rem; margin-bottom:4rem;">
+                    <div>
+                        <h2>About this Hotel</h2>
+                        <p style="margin-bottom:2rem; font-size:1.1rem;">${hotel.description}</p>
+                        
+                        <h3>Amenities</h3>
+                        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:1rem; margin-bottom:2rem;">
+                            ${hotel.amenities.map(a => `
+                                <div style="display:flex; align-items:center; gap:0.5rem;">
+                                    <i class="fas fa-check" style="color:var(--success);"></i>
+                                    <span style="text-transform:capitalize;">${a}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="padding:1.5rem; height:fit-content;">
+                        <h3 style="margin-bottom:1rem;">Select Dates</h3>
+                        <!-- Simple reminder of search params or new input -->
+                        <div class="form-group">
+                            <label class="form-label">Check In</label>
+                            <input type="date" id="checkIn" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Check Out</label>
+                            <input type="date" id="checkOut" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <h2 style="margin-bottom:2rem;">Available Rooms</h2>
+                <div class="room-list">
+                    ${hotel.rooms.map((room, index) => `
+                        <div class="room-card card" style="display:flex; margin-bottom:2rem;">
+                            <img src="${room.image}" class="room-img" alt="${room.type}" style="width:300px; object-fit:cover;">
+                            <div class="room-info" style="padding:1.5rem; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+                                <div>
+                                    <h3>${room.type}</h3>
+                                    <p style="color:var(--grey); margin-bottom:1rem;">
+                                        Max Capacity: ${room.capacity} Guests
+                                    </p>
+                                    <ul style="color:var(--grey); font-size:0.9rem;">
+                                        <li>• Free Cancellation</li>
+                                        <li>• Breakfast Included</li>
+                                        <li>• ${room.capacity > 2 ? 'Extra Space' : 'Cozy Layout'}</li>
+                                    </ul>
+                                </div>
+                                <div class="room-footer" style="display:flex; justify-content:space-between; align-items:center; margin-top:1rem;">
+                                    <div class="hotel-price">$${room.price}<span style="font-size:0.9rem; color:var(--dark); font-weight:400;">/night</span></div>
+                                    <button onclick="bookRoom('${hotel.id}', '${index}')" class="btn btn-primary">Book Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            // Pre-fill dates from search
+            const searchParams = localStorage.getItem('hotelApp_searchParams');
+            if (searchParams) {
+                const { checkIn, checkOut } = JSON.parse(searchParams);
+                if (checkIn) document.getElementById('checkIn').value = checkIn;
+                if (checkOut) document.getElementById('checkOut').value = checkOut;
+            }
+        });
+
+        function bookRoom(hotelId, roomIndex) {
+            const checkIn = document.getElementById('checkIn').value;
+            const checkOut = document.getElementById('checkOut').value;
+
+            if (!checkIn || !checkOut) {
+                alert('Please select check-in and check-out dates.');
+                return;
+            }
+
+            // Redirect to booking page
+            window.location.href = `booking.html?hotelId=${hotelId}&roomIndex=${roomIndex}&checkIn=${checkIn}&checkOut=${checkOut}`;
+        }
+    </script>
+</body>
+
+</html>

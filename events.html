@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events & Tournaments | LuxeStays Gaming</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap"
+        res="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="js/auth.js"></script>
+    <style>
+        .event-card {
+            display: flex;
+            background: var(--bg-card);
+            border: var(--neon-border);
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .event-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
+            /* Pink/Red glow for combat feels */
+            border-color: var(--danger);
+        }
+
+        .event-date {
+            background: var(--danger);
+            color: white;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .event-date span {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .event-details {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .event-meta {
+            color: var(--grey);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .event-meta i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .event-card {
+                flex-direction: column;
+            }
+
+            .event-date {
+                padding: 1rem;
+                flex-direction: row;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">LuxeGAME</a>
+            <ul class="nav-links">
+                <!-- Injected by Auth.js -->
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero"
+        style="height: 400px; background-image: linear-gradient(rgba(11, 12, 16, 0.8), rgba(11, 12, 16, 0.8)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+        <div class="hero-content">
+            <h1>Tournaments & Events</h1>
+            <p>Compete, Watch, Win.</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <h2 style="margin-bottom: 2rem;">Upcoming Schedule</h2>
+
+        <div class="event-card">
+            <div class="event-date">
+                <span>15</span>
+                AUG
+            </div>
+            <div class="event-details">
+                <h3>Global FPS Championship Watch Party</h3>
+                <div class="event-meta">
+                    <span><i class="fas fa-clock"></i> 18:00 - 23:00</span>
+                    <span style="margin-left:1rem;"><i class="fas fa-map-marker-alt"></i> Main Lounge</span>
+                </div>
+                <p>Join us on the big screen! Free snacks for all hotel guests. Prediction brackets with prizes.</p>
+                <button class="btn btn-primary" style="margin-top:1rem;">RSVP Free</button>
+            </div>
+        </div>
+
+        <div class="event-card">
+            <div class="event-date">
+                <span>22</span>
+                AUG
+            </div>
+            <div class="event-details">
+                <h3>Local LAN: 5v5 Tactical Shooter</h3>
+                <div class="event-meta">
+                    <span><i class="fas fa-clock"></i> 10:00 - 18:00</span>
+                    <span style="margin-left:1rem;"><i class="fas fa-trophy"></i> $1000 Prize Pool</span>
+                </div>
+                <p>Open registration for 8 teams. Bring your own peripherals or use our pro setups. Spectators welcome.
+                </p>
+                <button class="btn btn-accent" style="margin-top:1rem;">Register Team ($50)</button>
+            </div>
+        </div>
+
+        <div class="event-card">
+            <div class="event-date">
+                <span>05</span>
+                SEP
+            </div>
+            <div class="event-details">
+                <h3>Retro Night: Fighting Games</h3>
+                <div class="event-meta">
+                    <span><i class="fas fa-clock"></i> 20:00 - Late</span>
+                    <span style="margin-left:1rem;"><i class="fas fa-beer"></i> 18+ Only</span>
+                </div>
+                <p>Classic cabinet tournaments including SF2, Tekken 3, and MK. Craft beer and themed cocktails served.
+                </p>
+                <button class="btn btn-primary" style="margin-top:1rem;">Get Tickets</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Auth.js moved to head -->
+</body>
+
+</html>
