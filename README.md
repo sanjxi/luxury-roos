@@ -1,1 +1,1 @@
-# luxury-roos:https://sanjaipravin.github.io/luxury-roos/
+# LINK: https://sanjxi.github.io/luxury-roos/
